@@ -1,3 +1,5 @@
+// noinspection NonAsciiCharacters,JSNonASCIINames
+
 const { getRpByName, mark, doQueueActions } = Util.souma;
 // 仅影响文本输出时的排序
 const showRule = ['MT', 'ST', 'H1', 'H2', 'D1', 'D2', 'D3', 'D4'];
@@ -1467,8 +1469,8 @@ Options.Triggers.push({
       type: 'StartsUsing',
       netRegex: { id: '9D10' },
       condition: (data) => data.soumaPhase === 'P2',
-      delaySeconds: 3,
-      durationSeconds: 9,
+      delaySeconds: 1,
+      durationSeconds: 18,
       response: (data, matches, output) => {
         // cactbot-builtin-response
         output.responseOutputStrings = {
