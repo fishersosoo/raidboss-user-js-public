@@ -2555,22 +2555,24 @@ Options.Triggers.push({
         if (data.triggerSetConfig.伊甸P3二运地火安全区报法 === 'simple') {
           const r = data.soumaP3水分组结果右.includes(getRpByName(data, data.me)) ? 'R' : 'L';
           if (baseRule.includes(getRpByName(data, data.me))) {
-            return output[`${baseDirText}${r}`]();
+            return output[`${baseDir}${clock === -1 ? '逆' : '顺'}${r}`]();
           }
           // console.log(dirText, clock, raidDirText, data.soumaP3水分组结果左);
-          if (baseDirText === 'dirN' && clock === 1) {
-            // MTAC、顺、大团24
-            return output[`sp1${r}`]();
-          }
-          if (baseDirText === 'dirNE' && clock === -1) {
-            // MT42、逆、大团CA
-            return output[`sp2${r}`]();
-          }
-          return output[`${otherDirText}${r}`]();
+
+          // if (baseDirText === 'dirN' && clock === 1) {
+          //   // MTAC、顺、大团24
+          //   return output[`sp1${r}`]();
+          // }
+          // if (baseDirText === 'dirNE' && clock === -1) {
+          //   // MT42、逆、大团CA
+          //   return output[`sp2${r}`]();
+          // }
+          return output[`${baseDir}${clock === -1 ? '逆' : '顺'}${r}`]();
         }
       },
-      outputStrings: {
-        '0顺': { en: 'MTAC、大团二四' },
+      /*
+      *
+      * '0顺': { en: 'MTAC、大团二四' },
         '0逆': { en: 'MTAC、大团一三' },
         '1顺': { en: 'MT四二、大团DB' },
         '1逆': { en: 'MT四二、大团CA' },
@@ -2578,6 +2580,24 @@ Options.Triggers.push({
         '2逆': { en: 'MTDB、大团四二' },
         '3顺': { en: 'MT一三、大团AC' },
         '3逆': { en: 'MT一三、大团DB' },
+      * */
+      outputStrings: {
+        '0顺L': { en: 'BD顺，4点' },
+        '0逆L': { en: 'BD逆，1点' },
+        '1顺L': { en: '13顺、D点' },
+        '1逆L': { en: '13逆、A点' },
+        '2顺L': { en: 'AC顺、1点' },
+        '2逆L': { en: 'AC逆、2点' },
+        '3顺L': { en: '24顺、C点' },
+        '3逆L': {en: '24逆、D点'},
+        '0顺R': {en: 'BD顺，4点'},
+        '0逆R': {en: 'BD逆，1点'},
+        '1顺R': {en: '13顺、D点'},
+        '1逆R': {en: '13逆、A点'},
+        '2顺R': {en: 'AC顺、1点'},
+        '2逆R': {en: 'AC逆、2点'},
+        '3顺R': {en: '24顺、C点'},
+        '3逆R': {en: '24逆、D点'},
         'sp1L': { en: '右上↗（2点）' },
         'sp1R': { en: '左下↙（4点）' },
         'sp2L': { en: '下↓（C点）' },
