@@ -202,8 +202,8 @@ Options.Triggers.push({
       type: 'select',
       options: {
         en: {
-          "默预": "e",
-          "小队频道": "p"
+          "默语/e": "e",
+          "小队频道/p": "p"
         }
       },
       default: "e",
