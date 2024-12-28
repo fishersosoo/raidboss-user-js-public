@@ -188,6 +188,27 @@ Options.Triggers.push({
       },
     },
     {
+      id: '启用聊天频道播报',
+      name: { en: '启用聊天频道播报' },
+      type: 'checkbox',
+      default: false,
+      comment: {
+        en: '野队请关闭该功能，并正常处理该机制，以免影响纯净玩家。',
+      },
+    },
+    {
+      id: '聊天频道提示使用的频道',
+      name: {en: '聊天频道提示使用的频道'},
+      type: 'select',
+      options: {
+        en: {
+          "默预": "e",
+          "小队频道": "p"
+        }
+      },
+      default: "e",
+    },
+    {
       id: 'P1双火线上半场组',
       name: { en: 'P1双火线 上半场组' },
       type: 'string',
@@ -934,14 +955,15 @@ Options.Triggers.push({
             return shadows.every((v) => v.dir !== dir && v.opposite !== dir);
           });
           data.soumaCombatantData = [];
+          makeNotice(output[safeDirs.join('')](), data.triggerSetConfig.聊天频道提示使用的频道, data.triggerSetConfig.启用聊天频道播报);
           return output[safeDirs.join('')]();
         }
       },
       outputStrings: {
-        '04': { 'en': 'A、C安全' },
-        '15': { 'en': '4、2安全' },
-        '26': { 'en': 'D、B安全' },
-        '37': { 'en': '1、3安全' },
+        '04': { 'en': 'A、C' },
+        '15': { 'en': '4、2' },
+        '26': { 'en': 'D、B' },
+        '37': { 'en': '1、3' },
       },
     },
     {
@@ -2546,6 +2568,7 @@ Options.Triggers.push({
         const baseRule = data.triggerSetConfig.P3二运地火基准二人.toString().split(/[,\\/，]/).map((
           v,
         ) => (v.toUpperCase()));
+        makeNotice(output[`base${baseDir}${clock === -1 ? '逆' : '顺'}`](), data.triggerSetConfig.聊天频道提示使用的频道, data.triggerSetConfig.启用聊天频道播报);
         if (data.triggerSetConfig.伊甸P3二运地火安全区报法 === 'base') {
           return output[`base${baseDir}${clock === -1 ? '逆' : '顺'}`]();
         }
@@ -2590,13 +2613,13 @@ Options.Triggers.push({
         'dirER': { en: '右→（B点）' },
         'dirSEL': { en: '左上↖（1点）' },
         'dirSER': { en: '右下↘（3点）' },
-        'base0顺': { en: '地火：AC顺' },
+        'base0顺': { en: '地火：AC順' },
         'base0逆': { en: '地火：AC逆' },
-        'base1顺': { en: '地火：四二顺' },
+        'base1顺': { en: '地火：四二順' },
         'base1逆': { en: '地火：四二逆' },
-        'base2顺': { en: '地火：DB顺' },
+        'base2顺': { en: '地火：DB順' },
         'base2逆': { en: '地火：DB逆' },
-        'base3顺': { en: '地火：一三顺' },
+        'base3顺': { en: '地火：一三順' },
         'base3逆': { en: '地火：一三逆' },
       },
     },

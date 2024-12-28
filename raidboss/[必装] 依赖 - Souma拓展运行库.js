@@ -178,6 +178,14 @@ if (
       });
     }
   }
+  function makeNotice(tips, noticeChannel = "p",isEnabled = true, delay = 0) {
+  // console.debug('clearMark');
+    if (isEnabled) {
+      doQueueActions([
+        {c: 'command', p: `/${noticeChannel} ${tips}`, d: delay * 1000},
+      ]);
+    }
+  }
   // function placeReset() {
   //   if (isNotInRaidboss) console.debug("邮差reset");
   //   else callOverlayHandler({ call: "PostNamazu", c: "place", p: "reset" });
