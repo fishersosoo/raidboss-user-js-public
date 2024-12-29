@@ -309,6 +309,7 @@ if (
     rotateCoord,
     getDistance,
     deepClone,
+    makeNotice,
   };
   Util.souma = souma;
   Options.Triggers.push({
