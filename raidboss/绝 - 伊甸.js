@@ -1,6 +1,7 @@
 // noinspection NonAsciiCharacters,JSNonASCIINames
 
-const { getRpByName, mark, doQueueActions } = Util.souma;
+const { getRpByName, mark, doQueueActions,makeNotice } = Util.souma;
+
 // 仅影响文本输出时的排序
 const showRule = ['MT', 'ST', 'H1', 'H2', 'D1', 'D2', 'D3', 'D4'];
 const clearMark = (delay = 0) => {
