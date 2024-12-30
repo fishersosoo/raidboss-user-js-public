@@ -1,6 +1,7 @@
 // noinspection NonAsciiCharacters,JSNonASCIINames
 
 const {getRpByName, mark, doQueueActions, makeNotice} = Util.souma;
+// makeNotice("地火：AC順;MT: A; D1: C;".split(";"), "e", 1, 1);
 
 // 仅影响文本输出时的排序
 const showRule = ['MT', 'ST', 'H1', 'H2', 'D1', 'D2', 'D3', 'D4'];
@@ -2569,7 +2570,7 @@ Options.Triggers.push({
         const baseRule = data.triggerSetConfig.P3二运地火基准二人.toString().split(/[,\\/，]/).map((
           v,
         ) => (v.toUpperCase()));
-        makeNotice(output[`base${baseDir}${clock === -1 ? '逆' : '顺'}`](), data.triggerSetConfig.聊天频道提示使用的频道, data.triggerSetConfig.启用聊天频道播报);
+        makeNotice(output[`base${baseDir}${clock === -1 ? '逆' : '顺'}`]().split(";"), data.triggerSetConfig.聊天频道提示使用的频道, data.triggerSetConfig.启用聊天频道播报, 0.3);
         if (data.triggerSetConfig.伊甸P3二运地火安全区报法 === 'base') {
           return output[`base${baseDir}${clock === -1 ? '逆' : '顺'}`]();
         }
@@ -2614,14 +2615,14 @@ Options.Triggers.push({
         'dirER': { en: '右→（B点）' },
         'dirSEL': { en: '左上↖（1点）' },
         'dirSER': { en: '右下↘（3点）' },
-        'base0顺': { en: '地火：AC順' },
-        'base0逆': { en: '地火：AC逆' },
-        'base1顺': { en: '地火：四二順' },
-        'base1逆': { en: '地火：四二逆' },
-        'base2顺': { en: '地火：DB順' },
-        'base2逆': { en: '地火：DB逆' },
-        'base3顺': { en: '地火：一三順' },
-        'base3逆': { en: '地火：一三逆' },
+        'base0顺': { en: '地火：AC順;MT: A;D1: C' },
+        'base0逆': { en: '地火：AC逆;MT: A;D1: C' },
+        'base1顺': { en: '地火：四二順;MT: 4;D1: 2' },
+        'base1逆': { en: '地火：四二逆;MT: 4;D1: 2' },
+        'base2顺': { en: '地火：DB順;MT: D;D1: B' },
+        'base2逆': { en: '地火：DB逆;MT: D;D1: B' },
+        'base3顺': { en: '地火：一三順;MT: 1;D1: 3' },
+        'base3逆': { en: '地火：一三逆;MT: 1;D1: 3' },
       },
     },
     {

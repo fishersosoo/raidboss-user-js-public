@@ -181,6 +181,13 @@ if (
   function makeNotice(tips, noticeChannel = "p",isEnabled = true, delay = 0) {
   // console.debug('clearMark');
     if (isEnabled) {
+      if (tips instanceof  Array){
+        let q = [];
+        for (let i = 0; i < tips.length; ++i) {
+          q.push( {c: 'command', p: `/${noticeChannel} ${tips[i]}`, d: delay * 1000})
+        }
+        doQueueActions(q)
+      }
       doQueueActions([
         {c: 'command', p: `/${noticeChannel} ${tips}`, d: delay * 1000},
       ]);
