@@ -3176,13 +3176,14 @@ Options.Triggers.push({
           Directions.xyTo4DirNum(parseInt(v.x), parseInt(v.y), 100, 100)
         ).sort((a, b) => a - b);
         // console.log(data.soumaP4地火);
+        makeNotice( output[dirs.join('')](), data.triggerSetConfig.聊天频道提示使用的频道, data.triggerSetConfig.启用聊天频道播报, 0.3);
         return output[dirs.join('')]();
       },
       outputStrings: {
-        '01': { en: '回返：2点' },
-        '12': { en: '回返：3点' },
-        '23': { en: '回返：4点' },
-        '03': { en: '回返：1点' },
+        '01': { en: '2' },
+        '12': { en: '3' },
+        '23': { en: '4' },
+        '03': { en: '1' },
       },
     },
     // #endregion P4
