@@ -1,6 +1,6 @@
 // noinspection NonAsciiCharacters,JSNonASCIINames
 
-const {getRpByName, mark, doQueueActions, makeNotice} = Util.souma;
+const {getRpByName, mark, doQueueActions, makeNotice,getHexIdByName} = Util.souma;
 // makeNotice("地火：AC順;MT: A; D1: C;".split(";"), "e", 1, 1);
 
 // 仅影响文本输出时的排序
@@ -209,6 +209,15 @@ Options.Triggers.push({
         }
       },
       default: "e",
+    },
+    {
+      id: 'P4一运分摊基准标点开关',
+      name: { en: 'P4一运分摊基准标点开关' },
+      type: 'checkbox',
+      default: false,
+      comment: {
+        en: '野队请关闭该功能，并正常处理该机制，以免影响纯净玩家。',
+      },
     },
     {
       id: 'P1双火线上半场组',
@@ -2853,11 +2862,108 @@ Options.Triggers.push({
     {
       id: 'Souma 伊甸 P4 黑暗狂水收集',
       type: 'GainsEffect',
+      delaySeconds: 1,
       netRegex: { effectId: p3buffs.水 },
       condition: (data) => data.soumaPhase === 'P4' && data.soumaP4阶段 === '一运',
       preRun: (data, matches) => {
         data.soumaP4黑暗狂水.push(matches);
       },
+      promise: async (data, matches) => {
+        if (data.soumaP4黑暗狂水.length === 2) {
+          const combatants = (await callOverlayHandler({
+            call: 'getCombatants',
+          })).combatants;
+          data.soumaCombatantData = combatants.filter((v) =>
+              data.party.nameToRole_[v.Name] && v.ID.toString(16).startsWith('1')
+          );
+        }
+      },
+      run: (data, matches) => {
+        if (data.triggerSetConfig.P4一运分摊基准标点开关) {
+          return
+        }
+        if (data.soumaP4黑暗狂水.length !== 2) {
+          return
+        }
+        const lines = data.soumaP4光之暴走连线.map((v) => {
+          return {
+            name: v.source,
+            rp: getRpByName(data, v.source),
+            role: data.party.nameToRole_[v.source],
+          };
+        });
+        // 分摊带线
+        const waterWithLine = data.soumaP4黑暗狂水.find((w) =>
+            data.soumaP4光之暴走连线.find((l) => l.target === w.target || l.source === w.target)
+          );
+        // 水分摊连线
+        const waterLines = data.soumaP4光之暴走连线.filter((v) => v.source === waterWithLine.name || v.target === waterWithLine.name)
+        if (waterLines.length !== 2) {
+          throw new Error('水分摊连线不等于2');
+        }
+        // 和水分摊连线小子，遍历两条线找出线不是分摊那个人的端点
+        const waterLinesMen=[];
+        for (let i = 0; i < waterLines.length;){
+          if(waterLines[i].source!==waterWithLine.name){
+            waterLinesMen.push(waterLines[i].source)
+          }else{
+            waterLinesMen.push(waterLines[i].target)
+          }
+        }
+        // 不和水分摊连的线
+        const noWaterline = data.soumaP4光之暴走连线.find((v) => v.source !== waterWithLine.name || v.target !== waterWithLine.name)
+        let noWaterlineMan
+        if (waterLinesMen.find((v) => v === noWaterline.source)) {
+          noWaterlineMan = noWaterline.target
+        } else {
+          noWaterlineMan = noWaterline.source
+        }
+        // 分摊带线
+        const waterWithLineCombatantData =  data.soumaCombatantData.find((v) => v.Name === waterWithLine.target);
+        let waterWithLineMark, lineToWaterMark, lineToNoWaterMark
+        // 以分摊带线所在半场为基准，
+        // 上半场标记锁链1、禁止1去A塔
+        // 下半场标记锁链2、禁止2去C塔
+        if (waterWithLineCombatantData.PosY < 100) {
+          // 分摊线上半场标记锁链1
+          waterWithLineMark = "bind1"
+          // 和分摊线连线的人去对面
+          lineToWaterMark = ["bind2", "stop2"]
+          // 剩下一个连线和分摊线站一起
+          lineToNoWaterMark = "stop1"
+
+        } else {
+          // 分摊线上半场标记锁链2
+          waterWithLineMark = "bind2"
+          // 和分摊线连线的人去对面
+          lineToWaterMark = ["bind1", "stop1"]
+          // 剩下一个连线和分摊线站一起
+          lineToNoWaterMark = "stop2"
+
+        }
+        mark(
+            parseInt(getHexIdByName(data, waterWithLine.target), 16),
+            waterWithLineMark,
+            false,
+        );
+        mark(
+            parseInt(getHexIdByName(data, noWaterlineMan), 16),
+            lineToNoWaterMark,
+            false,
+        );
+        mark(
+            parseInt(getHexIdByName(data, waterLinesMen[0]), 16),
+            lineToWaterMark[0],
+            false,
+        );
+        mark(
+            parseInt(getHexIdByName(data, waterLinesMen[1]), 16),
+            lineToWaterMark[1],
+            false,
+        );
+        clearMark(10);
+      }
+
     },
     {
       id: 'Souma 伊甸 P4 光之波动',
