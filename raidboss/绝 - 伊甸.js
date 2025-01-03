@@ -2869,7 +2869,7 @@ Options.Triggers.push({
         data.soumaP4黑暗狂水.push(matches);
       },
       promise: async (data, matches) => {
-        if (data.soumaP4黑暗狂水.length === 2 && data.triggerSetConfig.P4一运分摊基准标点开关) {
+        if (data.triggerSetConfig.P4一运分摊基准标点开关) {
           const combatants = (await callOverlayHandler({
             call: 'getCombatants',
           })).combatants;
@@ -2878,8 +2878,8 @@ Options.Triggers.push({
           );
         }
       },
-      run: (data, matches) => {
-        if (data.triggerSetConfig.P4一运分摊基准标点开关) {
+       response: (data, _matches, output) => {
+        if (!data.triggerSetConfig.P4一运分摊基准标点开关) {
           return
         }
         if (data.soumaP4黑暗狂水.length !== 2) {
@@ -2896,20 +2896,23 @@ Options.Triggers.push({
         const waterWithLine = data.soumaP4黑暗狂水.find((w) =>
             data.soumaP4光之暴走连线.find((l) => l.target === w.target || l.source === w.target)
         );
+        console.debug( data.soumaP4黑暗狂水)
+        console.debug( data.soumaP4光之暴走连线)
         const waterWithLineGroup = data.party.nameToRole_[waterWithLine.target] === 'dps' ? 'dps' : 'tn';
-        const waterWithLineCombatantData = data.soumaCombatantData.find((v) => v.Name === waterWithLine.target);
-        let lineWaterGoA = waterWithLineCombatantData.PosY < 100;
-
+        const waterWithLineCombatantDataPosY = data.soumaCombatantData.find((v) => v.Name === waterWithLine.target).PosY;
+        let lineWaterGoA = true;
+        // console.log(waterWithLineCombatantData.PosY)
         const waterNoLine = data.soumaP4黑暗狂水.find((w) => w.target !== waterWithLine.target)
         const waterNoLineGroup = data.party.nameToRole_[waterNoLine.target] === 'dps' ? 'dps' : 'tn';
-        const waterNoLineCombatantData = data.soumaCombatantData.find((v) => v.Name === waterNoLine.target);
+        const waterNoLineCombatantDataPosY = data.soumaCombatantData.find((v) => v.Name === waterNoLine.target).PosY;
+
         let waterNoLineMark='attack5';
         if (waterWithLineGroup !== waterNoLineGroup) {
           // 不同组，tn去a
           lineWaterGoA = waterWithLineGroup === 'tn'
         } else {
           //同组看相对位置
-          lineWaterGoA = waterWithLineCombatantData.PosY < waterNoLineCombatantData < PosY
+          lineWaterGoA = waterWithLineCombatantDataPosY < waterNoLineCombatantDataPosY
         }
         if(lineWaterGoA){
           // 无连线分摊，dps去3，th去4
@@ -2925,7 +2928,7 @@ Options.Triggers.push({
         }
         // 和水分摊连线小子，遍历两条线找出线不是分摊那个人的端点
         const waterLinesMen = [];
-        for (let i = 0; i < waterLines.length;) {
+        for (let i = 0; i < waterLines.length;++i) {
           if (waterLines[i].source !== waterWithLine.target) {
             waterLinesMen.push(waterLines[i].source)
           } else {
@@ -2933,7 +2936,7 @@ Options.Triggers.push({
           }
         }
         // 不和水分摊连的线
-        const noWaterline = data.soumaP4光之暴走连线.find((v) => v.source !== waterWithLine.target || v.target !== waterWithLine.target)
+        const noWaterline = data.soumaP4光之暴走连线.find((v) => v.source !== waterWithLine.target && v.target !== waterWithLine.target)
         let noWaterlineMan
         if (waterLinesMen.find((v) => v === noWaterline.source)) {
           noWaterlineMan = noWaterline.target
@@ -2962,26 +2965,31 @@ Options.Triggers.push({
           lineToNoWaterMark = "stop2"
 
         }
+        console.debug(waterWithLine.target,waterWithLineMark)
         mark(
             parseInt(getHexIdByName(data, waterWithLine.target), 16),
             waterWithLineMark,
             false,
         );
+        console.debug(noWaterlineMan, lineToNoWaterMark)
         mark(
             parseInt(getHexIdByName(data, noWaterlineMan), 16),
             lineToNoWaterMark,
             false,
         );
+        console.debug(waterLinesMen[0], lineToWaterMark[0])
         mark(
             parseInt(getHexIdByName(data, waterLinesMen[0]), 16),
             lineToWaterMark[0],
             false,
         );
+        console.debug(waterLinesMen[1], lineToWaterMark[1])
         mark(
             parseInt(getHexIdByName(data, waterLinesMen[1]), 16),
             lineToWaterMark[1],
             false,
         );
+        console.debug(waterNoLine.target,waterNoLineMark)
         mark(
             parseInt(getHexIdByName(data, waterNoLine.target), 16),
             waterNoLineMark,
