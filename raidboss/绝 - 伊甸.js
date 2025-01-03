@@ -2869,7 +2869,7 @@ Options.Triggers.push({
         data.soumaP4黑暗狂水.push(matches);
       },
       promise: async (data, matches) => {
-        if (data.soumaP4黑暗狂水.length === 2) {
+        if (data.soumaP4黑暗狂水.length === 2 && data.triggerSetConfig.P4一运分摊基准标点开关) {
           const combatants = (await callOverlayHandler({
             call: 'getCombatants',
           })).combatants;
@@ -2903,13 +2903,20 @@ Options.Triggers.push({
         const waterNoLine = data.soumaP4黑暗狂水.find((w) => w.target !== waterWithLine.target)
         const waterNoLineGroup = data.party.nameToRole_[waterNoLine.target] === 'dps' ? 'dps' : 'tn';
         const waterNoLineCombatantData = data.soumaCombatantData.find((v) => v.Name === waterNoLine.target);
-
+        let waterNoLineMark='attack5';
         if (waterWithLineGroup !== waterNoLineGroup) {
           // 不同组，tn去a
           lineWaterGoA = waterWithLineGroup === 'tn'
         } else {
           //同组看相对位置
           lineWaterGoA = waterWithLineCombatantData.PosY < waterNoLineCombatantData < PosY
+        }
+        if(lineWaterGoA){
+          // 无连线分摊，dps去3，th去4
+          waterNoLineMark = waterNoLineGroup==='dps'?'attack3':'attack4'
+        } else {
+          // 无连线分摊，dps去2，th去1
+          waterNoLineMark = waterNoLineGroup === 'dps' ? 'attack2' : 'attack1'
         }
         // 水分摊连线
         const waterLines = data.soumaP4光之暴走连线.filter((v) => v.source === waterWithLine.target || v.target === waterWithLine.target)
@@ -2973,6 +2980,11 @@ Options.Triggers.push({
         mark(
             parseInt(getHexIdByName(data, waterLinesMen[1]), 16),
             lineToWaterMark[1],
+            false,
+        );
+        mark(
+            parseInt(getHexIdByName(data, waterNoLine.target), 16),
+            waterNoLineMark,
             false,
         );
         data.soumaCombatantData = [];
