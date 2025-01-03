@@ -2895,23 +2895,38 @@ Options.Triggers.push({
         // 分摊带线
         const waterWithLine = data.soumaP4黑暗狂水.find((w) =>
             data.soumaP4光之暴走连线.find((l) => l.target === w.target || l.source === w.target)
-          );
+        );
+        const waterWithLineGroup = data.party.nameToRole_[waterWithLine.target] === 'dps' ? 'dps' : 'tn';
+        const waterWithLineCombatantData = data.soumaCombatantData.find((v) => v.Name === waterWithLine.target);
+        let lineWaterGoA = waterWithLineCombatantData.PosY < 100;
+
+        const waterNoLine = data.soumaP4黑暗狂水.find((w) => w.target !== waterWithLine.target)
+        const waterNoLineGroup = data.party.nameToRole_[waterNoLine.target] === 'dps' ? 'dps' : 'tn';
+        const waterNoLineCombatantData = data.soumaCombatantData.find((v) => v.Name === waterNoLine.target);
+
+        if (waterWithLineGroup !== waterNoLineGroup) {
+          // 不同组，tn去a
+          lineWaterGoA = waterWithLineGroup === 'tn'
+        } else {
+          //同组看相对位置
+          lineWaterGoA = waterWithLineCombatantData.PosY < waterNoLineCombatantData < PosY
+        }
         // 水分摊连线
-        const waterLines = data.soumaP4光之暴走连线.filter((v) => v.source === waterWithLine.name || v.target === waterWithLine.name)
+        const waterLines = data.soumaP4光之暴走连线.filter((v) => v.source === waterWithLine.target || v.target === waterWithLine.target)
         if (waterLines.length !== 2) {
           throw new Error('水分摊连线不等于2');
         }
         // 和水分摊连线小子，遍历两条线找出线不是分摊那个人的端点
-        const waterLinesMen=[];
-        for (let i = 0; i < waterLines.length;){
-          if(waterLines[i].source!==waterWithLine.name){
+        const waterLinesMen = [];
+        for (let i = 0; i < waterLines.length;) {
+          if (waterLines[i].source !== waterWithLine.target) {
             waterLinesMen.push(waterLines[i].source)
-          }else{
+          } else {
             waterLinesMen.push(waterLines[i].target)
           }
         }
         // 不和水分摊连的线
-        const noWaterline = data.soumaP4光之暴走连线.find((v) => v.source !== waterWithLine.name || v.target !== waterWithLine.name)
+        const noWaterline = data.soumaP4光之暴走连线.find((v) => v.source !== waterWithLine.target || v.target !== waterWithLine.target)
         let noWaterlineMan
         if (waterLinesMen.find((v) => v === noWaterline.source)) {
           noWaterlineMan = noWaterline.target
@@ -2919,12 +2934,11 @@ Options.Triggers.push({
           noWaterlineMan = noWaterline.source
         }
         // 分摊带线
-        const waterWithLineCombatantData =  data.soumaCombatantData.find((v) => v.Name === waterWithLine.target);
         let waterWithLineMark, lineToWaterMark, lineToNoWaterMark
         // 以分摊带线所在半场为基准，
         // 上半场标记锁链1、禁止1去A塔
         // 下半场标记锁链2、禁止2去C塔
-        if (waterWithLineCombatantData.PosY < 100) {
+        if (lineWaterGoA) {
           // 分摊线上半场标记锁链1
           waterWithLineMark = "bind1"
           // 和分摊线连线的人去对面
@@ -2961,6 +2975,7 @@ Options.Triggers.push({
             lineToWaterMark[1],
             false,
         );
+        data.soumaCombatantData = [];
         clearMark(10);
       }
 
