@@ -929,13 +929,14 @@ Options.Triggers.push({
         if (data.soumaP1雾龙属性 === undefined) {
           throw new UnreachableCode();
         }
+        makeNotice(output[data.soumaP1雾龙属性](), data.triggerSetConfig.聊天频道提示使用的频道, data.triggerSetConfig.启用聊天频道播报);
         return output[data.soumaP1雾龙属性]();
       },
       run: (data) => {
         data.soumaP1雾龙属性 = undefined;
       },
       outputStrings: {
-        fire: { en: '分组分摊' },
+        fire: { en: '分攤' },
         thunder: { en: '分散' },
       },
     },
