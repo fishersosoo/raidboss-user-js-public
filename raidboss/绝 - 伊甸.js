@@ -113,6 +113,7 @@ const p3Dirs = {
 const headmarkers = {
   tankBuster: '00DA',
   冰花: '0159',
+  P4分摊: '003E',
 };
 const firstHeadmarker = parseInt(headmarkers.tankBuster, 16);
 const getHeadmarkerId = (data, matches) => {
@@ -3537,6 +3538,15 @@ Options.Triggers.push({
         'Usurper of Frost': '希瓦·米特隆',
         'Oracle\'s Reflection': '巫女的镜像',
         'Ice Veil': '永久冰晶',
+        'Frozen Mirror': '冰面镜',
+        'Holy Light': '圣光',
+        'Crystal of Darkness': '暗之水晶',
+        'Crystal of Light': '光之水晶',
+        'Oracle of Darkness': '暗之巫女',
+        'Fragment of Fate': '未来碎片',
+        'Sorrow\'s Hourglass': '悲伤的沙漏',
+        'Drachen Wanderer': '圣龙气息',
+        'Pandora': '潘多拉·米特隆',
       },
       'replaceText': {
         '\\(targeted\\)': '(本体)',
